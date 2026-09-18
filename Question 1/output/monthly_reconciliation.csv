@@ -1,0 +1,13 @@
+month,pipeline_revenue,closed_on,revenue_inr,signed_off_by,variance,status,root_cause
+2024-01,38446071.33,2024-02-09,38446071.33,A. Krishnan (Finance Controller),0.0,MATCH,Exact match to the cent.
+2024-02,34887085.55,2024-03-11,34887085.55,A. Krishnan (Finance Controller),0.0,MATCH,Exact match to the cent.
+2024-03,41971649.09,2024-04-09,42457899.09,A. Krishnan (Finance Controller),-486250.0,REVENUE DEFINITION (SCOPE),"Difference: -INR 486,250.00. Institutional bulk order invoiced outside POS till."
+2024-04,37958457.37,2024-05-10,37958457.37,A. Krishnan (Finance Controller),0.0,MATCH,Exact match to the cent.
+2024-05,41764716.4,2024-06-09,41764716.4,A. Krishnan (Finance Controller),0.0,MATCH,Exact match to the cent.
+2024-06,38987082.82,2024-07-10,38987082.82,A. Krishnan (Finance Controller),0.0,MATCH,Exact match to the cent.
+2024-07,40295160.11,2024-08-09,40527291.81,A. Krishnan (Finance Controller),-232131.7,SOURCE DATA GAP,"Difference: -INR 232,131.70. Hardware outage at Pune (S07) on July 9-11; finance used phone-ins."
+2024-08,45252181.75,2024-09-09,45252181.75,A. Krishnan (Finance Controller),0.0,MATCH,Exact match to the cent.
+2024-09,44615037.46,2024-10-10,44615037.46,A. Krishnan (Finance Controller),0.0,MATCH,Exact match to the cent.
+2024-10,56359195.92,2024-11-09,56359195.92,A. Krishnan (Finance Controller),0.0,MATCH,Exact match to the cent.
+2024-11,51583838.47,2024-12-10,51583838.47,A. Krishnan (Finance Controller),0.0,MATCH,Exact match to the cent.
+2024-12,50745259.48,2025-01-09,50745209.0,A. Krishnan (Finance Controller),50.48,REVENUE DEFINITION (ROUNDING),Difference: +INR 50.48. Finance rounded each bill to nearest rupee; pipeline sums line decimals.
