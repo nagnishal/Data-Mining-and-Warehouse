@@ -1,0 +1,17 @@
+{
+  "total_runtime_s": 140.1,
+  "num_notices": 12000,
+  "num_perm": 128,
+  "lsh_threshold": 0.35,
+  "band_count": 32,
+  "rows_per_band": 4,
+  "shingle_k": 7,
+  "retrieval_time_before_s": 10.6,
+  "retrieval_time_after_s": 28.8,
+  "recall_before_mitigation": 0.8781,
+  "recall_after_mitigation": 0.8351,
+  "pair_precision": 1.0,
+  "pair_recall": 0.7455,
+  "pair_f1": 0.8542,
+  "fp_cost_ratio": 9
+}

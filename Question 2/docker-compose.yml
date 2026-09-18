@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: q2-postgres
+    environment:
+      POSTGRES_USER: setubid
+      POSTGRES_PASSWORD: setubid
+      POSTGRES_DB: setubid
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U setubid"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  pipeline:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: q2-pipeline
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: setubid
+      DB_USER: setubid
+      DB_PASS: setubid
+    volumes:
+      - ${DATA_DIR:-./data_2}:/exam/data:ro
+      - ./output:/output
+    command: python pipeline.py
+
+volumes:
+  pgdata:

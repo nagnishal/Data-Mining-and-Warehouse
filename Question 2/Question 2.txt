@@ -1,0 +1,48 @@
+instructions:-
+
+1)the whole stack must run locally from a single docker compose up. No managed cloud service be used. if examiner cannot bring your stack up from cold start on your machine, the implementation marks for that part are not available,
+2) the input data is in /exam/data/. it is not clean. Any claim you make must be backed by a number you measured and can reproduce on request.
+
+Question 2:- Twelve Thousand Tenders, Wearing Disguises
+
+Context:-
+
+SetuBid aggregates public procurement notices scraped from 260 government portals. A single tender is routinely published on several portals, then re-published after a corrigendum, then republished again by a nodal agency that reformats it. Each copy carries a different reference number, a different date, and slightly different wording; there are no shared identifiers anywhere.
+
+Bidders pay for SetuBid because it promises: "one opportunity, one card". Today, the product shows a bidder the same road-widening contract nine times, and the bidder pays a subscription to see it nine times. Meanwhile, the operations team has been trying to fix this with a nightly job that compares every notice against every other notice. Last month, that job ran for 31 hours and was killed. The corpus grows by roughly 4,000 notices a week, and the board has asked for the deduplication to finish inside a 20-minute nightly window on one machine forever.
+
+The head of production adds two constraints that she refuses to negotiate:
+
+"First, if we merge two tenders that were actually different, a bidder misses a deadline and sues us. If we fail to merge two tenders that were the same, a bidder sees a duplicate card and grumbles. Those two mistakes are not the same size, and I want to see that asymmetry in your settings as a number, not as an adjective.
+
+Second, the card ID that a bidder bookmarks today must still point at the same opportunity next month, even though we will have re-run the whole pipeline thirty times by then and the cluster will have absorbed new copies. If bookmarks break, we lose the account."
+
+What you are given in exam/data/
+
+*notices/ - Parquet files: notice_id, portal_id, published_at, title, body (500-9,000 characters), estimated_value, closing_date.
+
+*labeled_pairs.csv - 900 manually adjudicated pairs marked same/different. Treat this as the only trustworthy label source. It is not a balanced sample; find out how it is skewed before you use it.
+
+*portal_profiles.md - Informal notes from the scraping team about how each portal formats its notices.
+
+
+on how Question 2 is written. The parts below state what the system must achieve and what you must be able to prove about it. They deliberately do not name a technique, a library or a parameter. choosing the method - and defending it against the method you did not choose - is part of what is being examined. Any approach is admissible provided it meaets the started cost ceiling and you can substantiate its behaviour with measurements on the given corpus.
+
+section A- from an intractable comparison to tractable one
+
+A) Define What "similar" means here, mechanically. before anything can be compared cheaply it must be comparable at all. commit to a way of turning a notice into something over cheaply it must be comparable at all. commit to a way of turning a notice into something over which a similarity score between two notices is well defined, and state the score. your choice involves at least one decision about how finely the text is decomposed, and at least one decision about which parts of the text are signal and which are noise- the corpus contains monetary amounts, dates, reference numbers and portal boilerplate, and it is for you to say what becomes of them. Defined both decisions with evidence from this corpus rather than from a reference: take a pair labelled same and a pair labelled different, show how the score separates them under two competing choices, and say which you adopted and what the adoption cost.
+
+B) Trade Exactness for space, deliberately. retaining the exact representation for the whole corpus is not affordable, so you will hold a reduced from of each notice and accept that the similarity you compute from it is an estimate. fix the size of that reduced from before you implement it, by stating the estimation accuracy the application needs and arguing from that requirement to a size. then close the loop: measure the realised error against labelled_pairs.csv and report whether the estimator behaved as your argument predicted, including where it did not . a size adopted because it is a round number, or because a tutorial used it, earns nothing here even if the system works.
+
+C) Make Retrieval sublinear, and price the risk. the nightly budget rules out scoring each notice against the corpus, so you need a way to retrieve, for any notice, a short candidate list that i very likely to already contains its true duplicates. build one. whatever you build will expose a tunable tension between how reliable a genuinely similar pair is retrieved and how much work the characterise, as  a function of true similarity, the probability that a pair survives to the candidate stage; plot it; and mark on the operating point you chose. then justify that point in the head of product's terms- her two failure modes  have different costs , and your answer should show where that ratio entered your settings.
+
+
+Section B -- Marking it a database problem, not a script
+
+D) Given the retrieval structure a home and an access path. Whatever your scheme in (c) consults at lookup time must live as relational data that survives a process restart and can be queried by the application - not in a python object that dies with the job. design that schema. Then make a considered choice of access method for the lookup, and justify it by reference to how the candidate methods physically locate rows, naming at least one alternative you rejected and why it loses here. support the argument with measurements rather than assertions: the planner's chosen path, the rows actually examined, and wall- clock time, with the rejected alternative forced for comparison.
+
+
+E) Find the place where the design betrays you. run your retrieval over the full corpus and look at how the work is distributed across notices rather than at its total . it will be badly uneven and a small part of the corpus will be responsible for a disproportionate share of the  nightly cost locate that part empirically;portal_profiles.md will help you interpret what you find .then  do three things: explain in mechanical terms why this property of the the data interacts with your design to produce the distribution you observe ; quantify what is costs you against the 20 minute budget and mitigate it report the distribution and the runtime before and after and state plainly what the mitigation cost you in retrieval quality measured on the labelled pairs . A mitigation whose price is not measured is not accepted.
+
+how this is marked
+for each part roughly one third of the marks are for the working , system one third for the measurement  that shows it works and one third of the judgment shown in choosing between reasonable alternatives partial work that is honestly described scores well there is no single correct design.
